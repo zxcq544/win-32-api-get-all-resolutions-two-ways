@@ -15,22 +15,45 @@ void normal_way() {
 
 
 int main() {
-	normal_way();
+	//normal_way();
 	IDXGIAdapter* pAdapter;
 	IDXGIFactory* pFactory = NULL;
 	CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&pFactory);
-	pFactory->EnumAdapters(0, &pAdapter);
+	pFactory->EnumAdapters(0, &pAdapter);	
+		
+	//###### Prints all adapters description #######//
+	UINT i = 0;
+	IDXGIAdapter* adapter = nullptr;
+	DXGI_ADAPTER_DESC desc;
+	while (pFactory->EnumAdapters(i, &adapter) !=DXGI_ERROR_NOT_FOUND)	{
+		
+		adapter->GetDesc(&desc);
+		//std::wstring text = L"***Adapter: ";
+		//text += desc.Description;
+		//text += L"\n";
+		std::wcout << L"***Adapter: " << L"Id: "<<i << L"; Description: " << desc.Description << std::endl << std::endl;
+		++i;
+	}
+	//####   End of adapter description print ########//
+
+
 	if (pFactory)
 	{
 		pFactory->Release();
-	}	
+	}
+
+	//######### Prints all resolutions for One adapter. For 1 Videocard it's adapter 0 #####//
 	IDXGIOutput* pOutput = NULL;	
 	pAdapter->EnumOutputs(0, &pOutput);
 	UINT numModes = 0;
+	//######## Format is tricky. Need to know monitor format.
+	//######## People said this one is default for monitors.
 	DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;	
 	// Get the number of elements
 	pOutput->GetDisplayModeList(format, 0, &numModes, NULL);
-	std::cout <<" Number of available modes = "<< numModes<<std::endl;
+
+	pAdapter->GetDesc(&desc);
+	std::wcout << L"Number of available modes for "<<desc.Description<<  L" = " << numModes << std::endl << std::endl;
 	std::vector<DXGI_MODE_DESC> modeList(numModes);
 	// Get the list
 	pOutput->GetDisplayModeList(format, 0, &numModes, &modeList[0]);	
