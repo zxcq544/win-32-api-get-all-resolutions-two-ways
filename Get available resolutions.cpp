@@ -51,7 +51,6 @@ int main() {
 	DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM;	
 	// Get the number of elements
 	pOutput->GetDisplayModeList(format, 0, &numModes, NULL);
-
 	pAdapter->GetDesc(&desc);
 	std::wcout << L"Number of available modes for "<<desc.Description<<  L" = " << numModes << std::endl << std::endl;
 	std::vector<DXGI_MODE_DESC> modeList(numModes);
