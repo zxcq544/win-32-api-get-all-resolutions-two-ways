@@ -3,6 +3,7 @@ using namespace Microsoft::WRL;
 #pragma comment(lib, "d3d12.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dcompiler.lib")
+
 //Prints out each video card(including Microsoft software render)
 // And prints out all connected display names and their available resolutions and refresh rates
 void DirectXDevice::LogAdapters(){
@@ -83,5 +84,16 @@ void DirectXDevice::CreateD3DDevice(){
 	else {
 		std::wcout << "Failed to Create Device " << std::endl;
 	}
+
+	// Fallback to WARP device.
+	if (FAILED(hardwareResult))	{
+		ComPtr<IDXGIAdapter> pWarpAdapter;
+		ThrowIfFailed(mdxgiFactory->EnumWarpAdapter(IID_PPV_ARGS(&pWarpAdapter)));
+		ThrowIfFailed(D3D12CreateDevice(
+			pWarpAdapter.Get(),
+			D3D_FEATURE_LEVEL_11_0,
+			IID_PPV_ARGS(&md3dDevice)));
+	}
+
 }
 

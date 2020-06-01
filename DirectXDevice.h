@@ -22,7 +22,7 @@ public:
 		}
 	}
 private:
-	IDXGIFactory* mdxgiFactory = NULL;
+	ComPtr<IDXGIFactory4> mdxgiFactory = NULL;
 	ID3D12Device* md3dDevice = NULL;
 };
 
