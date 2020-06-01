@@ -1,4 +1,7 @@
 #include "DirectXDevice.h"
+
+//Prints out each video card(including Microsoft software render)
+// And prints out all connected display names and their available resolutions and refresh rates
 void DirectXDevice::LogAdapters(){
 	UINT i = 0;
 	IDXGIAdapter* adapter = nullptr;
@@ -18,6 +21,8 @@ void DirectXDevice::LogAdapters(){
 		adapterList[i]->Release();
 	}	
 }
+
+//Prints all connected displays for each video card
 void DirectXDevice::LogAdapterOutputs(IDXGIAdapter* adapter) {
 	UINT i = 0;
 	IDXGIOutput* output = nullptr;
@@ -35,6 +40,7 @@ void DirectXDevice::LogAdapterOutputs(IDXGIAdapter* adapter) {
 	}
 }
 
+//Prints out available Resolutions and Refresh rates for each connected display
 void DirectXDevice::LogOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT format){
 	UINT count = 0;
 	UINT flags = 0;
