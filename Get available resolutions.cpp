@@ -34,15 +34,15 @@ int main() {
 int main() {
 	//normal_way();
 	IDXGIAdapter* pAdapter;
-	IDXGIFactory* pFactory = NULL;
-	CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&pFactory);
-	pFactory->EnumAdapters(0, &pAdapter);
+	IDXGIFactory* mdxgiFactory = NULL;
+	CreateDXGIFactory(__uuidof(IDXGIFactory), (void**)&mdxgiFactory);
+	mdxgiFactory->EnumAdapters(0, &pAdapter);
 
 	//###### Prints all adapters description #######//
 	UINT i = 0;
 	IDXGIAdapter* adapter = nullptr;
 	DXGI_ADAPTER_DESC desc;
-	while (pFactory->EnumAdapters(i, &adapter) !=DXGI_ERROR_NOT_FOUND)	{
+	while (mdxgiFactory->EnumAdapters(i, &adapter) !=DXGI_ERROR_NOT_FOUND)	{
 
 		adapter->GetDesc(&desc);
 		//std::wstring text = L"***Adapter: ";
@@ -54,9 +54,9 @@ int main() {
 	//####   End of adapter description print ########//
 
 
-	if (pFactory)
+	if (mdxgiFactory)
 	{
-		pFactory->Release();
+		mdxgiFactory->Release();
 	}
 
 	//######### Prints all resolutions for One adapter. For 1 Videocard it's adapter 0 #####//

@@ -1,5 +1,8 @@
 #include "DirectXDevice.h"
-
+using namespace Microsoft::WRL;
+#pragma comment(lib, "d3d12.lib")
+#pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "d3dcompiler.lib")
 //Prints out each video card(including Microsoft software render)
 // And prints out all connected display names and their available resolutions and refresh rates
 void DirectXDevice::LogAdapters(){
@@ -7,7 +10,7 @@ void DirectXDevice::LogAdapters(){
 	IDXGIAdapter* adapter = nullptr;
 	std::vector<IDXGIAdapter*> adapterList;
 	DXGI_ADAPTER_DESC desc;
-	while (pFactory->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND)	{		
+	while (mdxgiFactory->EnumAdapters(i, &adapter) != DXGI_ERROR_NOT_FOUND)	{		
 		adapter->GetDesc(&desc);
 		std::wstring text = L"***Adapter: ";
 		text += desc.Description;
@@ -20,6 +23,7 @@ void DirectXDevice::LogAdapters(){
 		LogAdapterOutputs(adapterList[i]);
 		adapterList[i]->Release();
 	}	
+	CreateD3DDevice();
 }
 
 //Prints all connected displays for each video card
@@ -56,6 +60,28 @@ void DirectXDevice::LogOutputDisplayModes(IDXGIOutput* output, DXGI_FORMAT forma
 			L"Height = " + std::to_wstring(x.Height) + L"\t" +
 			L"Refresh = " + std::to_wstring(n/d) + L" Hz\n";
 		std::wcout<<text.c_str();
+	}
+}
+
+void DirectXDevice::CreateD3DDevice(){
+#if defined(DEBUG) || defined(_DEBUG)
+	// Enable the D3D12 debug layer.
+	{
+		ComPtr<ID3D12Debug> debugController;
+		ThrowIfFailed(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)));
+		debugController->EnableDebugLayer();
+	}
+#endif
+	// Try to create hardware device.
+	HRESULT hardwareResult = D3D12CreateDevice(
+		nullptr, // default adapter
+		D3D_FEATURE_LEVEL_11_0,
+		IID_PPV_ARGS(&md3dDevice));	
+	if (md3dDevice) {
+		std::wcout << "Device Created Succeffully" << std::endl;
+	}
+	else {
+		std::wcout << "Failed to Create Device " << std::endl;
 	}
 }
 
